@@ -1,1 +1,82 @@
-{"status":"Interactive reconstruction ready · scan-quality bar still open","updated":"7 September 2026 · review pass 2","entries":[{"stage":"01 / Source assessment","state":"Reviewed","title":"Ten source images establish the visible apartment.","detail":"Seven interior photographs, a dimensioned marketing floor plan, one exterior and one aerial. Room connections and listed dimensions anchor the model. Ceiling height, exact openings, bedroom assignment and unseen surfaces remain inferred."},{"stage":"02 / First model","state":"Built","title":"The first connected apartment.","detail":"A dedicated builder created walls and doorways, sliding windows, marbled floors, built-in robes, leather sectional, workstation, kitchen appliances, renovated bathroom, fans and balcony. The overview below records the first version.","image":"/reviews/overview-initial.png"},{"stage":"03 / Independent source critique","state":"Corrections applied","title":"The bed and bath screen were oriented incorrectly.","detail":"A separate critic compared the model structure with the source images. The builder corrected the bed headboard to its short end and the bath screen to the exposed long edge. Bedroom mapping is explicitly described as inferred. Balcony access was also repaired."},{"stage":"04 / First rendered rooms","state":"Baseline captured","title":"The living room needed softer fabrics.","detail":"The critic captured real living-room and kitchen renders before its session hit the account usage limit. The lead compared these with the photographs. Flat throws and rigid cushions were the clearest remaining visible weakness.","image":"/reviews/living-initial.png"},{"stage":"05 / Detail refinement","state":"Lead inspected","title":"Folded cloth, softer cushions and clearer room views.","detail":"The lead replaced flat throws with folded cloth and fringe, softened cushions, improved the living-room starting view, added an actual bathroom mirror, corrected wardrobe fronts and added fixture collisions. An ambient-occlusion experiment produced visible artifacts and was removed after inspecting the output. This is a direct comparison, not a blind independent A/B verdict.","image":"/reviews/living-current.png"},{"stage":"06 / Exploration checks","state":"Passed checks listed here","title":"Eight accessible spaces, one connected model.","detail":"All eight starting positions are clear and connected on a 5 cm navigation grid against 62 collision surfaces. Type checking passes. The lead inspected real living, kitchen, bathroom and bedroom renders; original-photo mode and the floor-plan dialog work. A 390 px phone layout was inspected. Room navigation accepts valid inputs and rejects invalid rooms."},{"stage":"07 / Review gap","state":"Unfinished","title":"Independent rendered review is not complete.","detail":"Both reviewer sessions stopped at the account usage limit. The spatial critic supplied useful source-based corrections and captured two renders, but no final independent visual verdict was returned. The separate interaction critic could not run. No claim of winning the requested quality bar is made."},{"stage":"08 / Photorealistic scan","state":"Additional capture required","title":"This is a reconstruction, not a Gaussian splat.","detail":"Most rooms have only one photograph, which does not establish unseen geometry or a continuous photorealistic apartment. To reach scan fidelity, provide a slow overlapping walkthrough connecting all rooms, with translated views around objects and doorways under steady lighting. The garage remains unplaced, as the supplied plan explicitly says not in position."}]}
+{
+  "status": "Revision in progress · responding to your review",
+  "updated": "7 September 2026 · doors, circulation, materials and lighting",
+  "entries": [
+    {
+      "stage": "01 / Source assessment",
+      "state": "Reviewed",
+      "title": "Ten source images establish the visible apartment.",
+      "detail": "Seven interior photographs, a dimensioned marketing floor plan, one exterior and one aerial. Room connections and listed dimensions anchor the model. Ceiling height, exact openings, bedroom assignment and unseen surfaces remain inferred."
+    },
+    {
+      "stage": "02 / First model",
+      "state": "Built",
+      "title": "The first connected apartment.",
+      "detail": "A dedicated builder created walls and doorways, sliding windows, marbled floors, built-in robes, leather sectional, workstation, kitchen appliances, renovated bathroom, fans and balcony. The overview below records the first version.",
+      "image": "/reviews/overview-initial.png"
+    },
+    {
+      "stage": "03 / Independent source critique",
+      "state": "Corrections applied",
+      "title": "The bed and bath screen were oriented incorrectly.",
+      "detail": "A separate critic compared the model structure with the source images. The builder corrected the bed headboard to its short end and the bath screen to the exposed long edge. Bedroom mapping is explicitly described as inferred. Balcony access was also repaired."
+    },
+    {
+      "stage": "04 / First rendered rooms",
+      "state": "Baseline captured",
+      "title": "The living room needed softer fabrics.",
+      "detail": "The critic captured real living-room and kitchen renders before its session hit the account usage limit. The lead compared these with the photographs. Flat throws and rigid cushions were the clearest remaining visible weakness.",
+      "image": "/reviews/living-initial.png"
+    },
+    {
+      "stage": "05 / Detail refinement",
+      "state": "Lead inspected",
+      "title": "Folded cloth, softer cushions and clearer room views.",
+      "detail": "The lead replaced flat throws with folded cloth and fringe, softened cushions, improved the living-room starting view, added an actual bathroom mirror, corrected wardrobe fronts and added fixture collisions. An ambient-occlusion experiment produced visible artifacts and was removed after inspecting the output. This is a direct comparison, not a blind independent A/B verdict.",
+      "image": "/reviews/living-current.png"
+    },
+    {
+      "stage": "06 / Exploration checks",
+      "state": "Passed checks listed here",
+      "title": "Eight accessible spaces, one connected model.",
+      "detail": "All eight starting positions are clear and connected on a 5 cm navigation grid against 62 collision surfaces. Type checking passes. The lead inspected real living, kitchen, bathroom and bedroom renders; original-photo mode and the floor-plan dialog work. A 390 px phone layout was inspected. Room navigation accepts valid inputs and rejects invalid rooms."
+    },
+    {
+      "stage": "07 / Review gap",
+      "state": "Independent reviews completed",
+      "title": "The original quality bar is not met.",
+      "detail": "The spatial critic found a recognizable architectural reconstruction, but insufficient material detail, illumination and source fidelity for the requested photorealistic experience. The interaction critic verified room changes, orbit, look controls, source photos and the plan, and identified tiny phone navigation targets. Those phone controls now have a named room selector and larger movement buttons."
+    },
+    {
+      "stage": "08 / Photorealistic scan",
+      "state": "Additional capture required",
+      "title": "This is a reconstruction, not a Gaussian splat.",
+      "detail": "Most rooms have only one photograph, which does not establish unseen geometry or a continuous photorealistic apartment. To reach scan fidelity, provide a slow overlapping walkthrough connecting all rooms, with translated views around objects and doorways under steady lighting. The garage remains unplaced, as the supplied plan explicitly says not in position."
+    },
+    {
+      "stage": "09 / Your review",
+      "state": "Acting on feedback",
+      "title": "Door placement, sofa spacing and flat graphics need work.",
+      "detail": "You identified misplaced doors, a sofa obstructing entry, missing textures, and incomplete lighting and reflections. These issues reopen spatial and visual review; the current model is not presented as finished."
+    },
+    {
+      "stage": "10 / Circulation correction",
+      "state": "Geometry and routes checked",
+      "title": "The entry is clear and door swings follow the plan.",
+      "detail": "The sofa now leaves approximately 95 cm to the inside entry wall, 97 cm to the kitchen partition and 77 cm to the bedroom wall. Bedroom leaves swing into their rooms and the bathroom opening moves to the left half of its wall. Door and furniture collisions follow the corrected geometry. All eight room landings remain connected on the navigation grid; visual review remains separate."
+    },
+    {
+      "stage": "11 / Reference materials",
+      "state": "Applied · independent review running",
+      "title": "Marbled tile, patterned rug and charcoal leather.",
+      "detail": "Three material-only images were generated separately from the supplied photographs, then applied with appropriate tiling and subtle surface relief. These are AI-derived appearance maps, not measured texture scans. The original photographs remain available for direct comparison.",
+      "image": "/reviews/living-materials-day-before.png"
+    },
+    {
+      "stage": "12 / Lighting",
+      "state": "Building",
+      "title": "Window light and reflections of the actual apartment.",
+      "detail": "The lighting builder is reducing the washed-out ambient illumination and replacing unrelated studio reflections with static captures from the modeled rooms. This is not a claim of physically baked global illumination. A separate critic will inspect the actual result."
+    }
+  ]
+}
