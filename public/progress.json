@@ -1,6 +1,6 @@
 {
-  "status": "Revision in progress · responding to your review",
-  "updated": "7 September 2026 · doors, circulation, materials and lighting",
+  "status": "Public preview · outdoor panorama and material update",
+  "updated": "7 September 2026 · public update",
   "entries": [
     {
       "stage": "01 / Source assessment",
@@ -63,7 +63,7 @@
       "stage": "10 / Circulation correction",
       "state": "Geometry and routes checked",
       "title": "The entry is clear and door swings follow the plan.",
-      "detail": "The sofa now leaves approximately 95 cm to the inside entry wall, 97 cm to the kitchen partition and 77 cm to the bedroom wall. Bedroom leaves swing into their rooms and the bathroom opening moves to the left half of its wall. Door and furniture collisions follow the corrected geometry. All eight room landings remain connected on the navigation grid; visual review remains separate."
+      "detail": "The sofa now leaves approximately 95 cm to the inside entry wall, 97 cm to the kitchen partition and 77 cm to the bedroom wall. Bedroom leaves swing into their rooms and the bathroom opening moves to the left half of its wall. Door and furniture collisions follow the corrected geometry. All eight room landings remain connected on the navigation grid; visual review remains separate. A later independent critique identified that bedroom openings belong in the corridor side walls; that correction remains outstanding."
     },
     {
       "stage": "11 / Reference materials",
@@ -74,9 +74,16 @@
     },
     {
       "stage": "12 / Lighting",
-      "state": "Building",
+      "state": "Applied · refinement ongoing",
       "title": "Window light and reflections of the actual apartment.",
-      "detail": "The lighting builder is reducing the washed-out ambient illumination and replacing unrelated studio reflections with static captures from the modeled rooms. This is not a claim of physically baked global illumination. A separate critic will inspect the actual result."
+      "detail": "Apartment-specific reflection captures and window lighting are applied. Window glass no longer casts opaque shadows. This is cached room radiance, not a physically baked GI solution. Independent final lighting review was interrupted; no quality-bar pass is claimed."
+    },
+    {
+      "stage": "13 / Public outdoor update",
+      "state": "Lead inspected · publishing",
+      "title": "Your park views now surround the apartment.",
+      "detail": "The three supplied screenshots were reconstructed into one wrapped panorama, with phone controls and arrows excluded. The balcony and bedroom renders were inspected. Timber uses a new reference-derived grain map; leather, tile and fabric surface response were adjusted. The panorama is approximate, with synthesized missing directions. Smaller public updates will make progress easier to inspect.",
+      "image": "/reviews/balcony-panorama.png"
     }
   ]
 }

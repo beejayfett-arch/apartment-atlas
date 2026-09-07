@@ -115,6 +115,8 @@ export function createApartmentLighting(
     mesh.getWorldPosition(meshPosition);
     const probe = probeAt(meshPosition);
     const original = mesh.material;
+    const surfaces=Array.isArray(original)?original:[original];
+    if(surfaces.some(m=>m.transparent&&m.opacity<.3))mesh.castShadow=false;
     function localMaterial(source: THREE.Material) {
       if (!(source as THREE.MeshStandardMaterial).isMeshStandardMaterial) return source;
       const standard = source as THREE.MeshStandardMaterial;
@@ -156,7 +158,7 @@ export function createApartmentLighting(
     if (disposed) return;
     const changed = daylight !== day;
     daylight = day;
-    sun.intensity = day ? 3.1 : .16;
+    sun.intensity = day ? 1.6 : .16;
     sky.intensity = day ? .3 : .16;
     for (const light of windows) light.intensity = light.userData.dayIntensity * (day ? 1 : .12);
     for (const light of fixtures) light.intensity = day ? 1.2 : 7;
@@ -225,7 +227,7 @@ export function createApartmentLighting(
       renderer.shadowMap.needsUpdate = true;
       renderer.autoClear = true;
       scene.updateMatrixWorld(true);
-      const target = pmrem.fromScene(scene, 0, .055, 45, {
+      const target = pmrem.fromScene(scene, 0, .055, 110, {
         size: options.probeSize ?? 128,
         position: probe.position,
       });
@@ -279,3 +281,5 @@ export function createApartmentLighting(
   }
   return { step, refresh, afterTextures, setDaylight, dispose, sun, sky, rig, probes, get pending() { return queue.length; } };
 }
+
+

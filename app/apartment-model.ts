@@ -38,7 +38,7 @@ export function buildApartment() {
     const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=8;return t;
   }
   function mat(name:string,color:string,roughness=.72,metalness=0,kind?:string){
-    const m=new THREE.MeshStandardMaterial({color,roughness,metalness});if(kind){m.color.set('#ffffff');m.map=canvasTexture(kind,color);m.bumpMap=m.map;m.bumpScale=kind==='fabric'||kind==='carpet'? .008:.0017}m.userData.referenceMaterial=name;materials[name]=m;return m;
+    const m=new THREE.MeshStandardMaterial({color,roughness,metalness});if(kind){m.color.set('#ffffff');m.map=canvasTexture(kind,color);m.bumpMap=m.map;m.bumpScale=kind==='fabric'||kind==='carpet'? .00065:.001}m.userData.referenceMaterial=name;materials[name]=m;return m;
   }
   const wall=mat('paint','#eeeae1',.9),white=mat('joinery','#f6f4ed',.45),trim=mat('trim','#fcfcf7',.55),dark=mat('charcoal','#25282a',.45),black=mat('black hardware','#202122',.35,.4),steel=mat('stainless','#a4adb0',.27,.82),glass=new THREE.MeshPhysicalMaterial({color:'#d0e3e4',roughness:.06,metalness:0,transparent:true,opacity:.17,side:THREE.DoubleSide,depthWrite:false}),wood=mat('oak','#a97a4d',.52,0,'wood'),walnut=mat('walnut','#805838',.5,0,'wood'),tile=mat('marble tile','#d0d2cb',.62,0,'tile'),carpet=mat('carpet','#b9afa0',.97,0,'carpet'),leather=mat('leather','#343431',.6,0,'leather'),linen=mat('linen','#c9bea9',.96,0,'fabric'),cushion=mat('cushion','#967765',.97,0,'fabric'),throwMat=mat('ochre throws','#875635',1,0,'fabric'),rug=mat('rug','#b8b9b1',1,0,'rug'),floral=mat('floral duvet','#e4dce0',1,0,'floral'),brick=mat('balcony brick','#b88d67',.98,0,'brick');
   const leafMat=mat('leaves','#3f6436',.78),leafLight=mat('young leaves','#73934b',.72),potMat=mat('terracotta','#a75736',.9),soilMat=mat('soil','#35332a',1);
@@ -199,6 +199,7 @@ export function buildApartment() {
   ];
   return { group, colliders, rooms, ceiling, ceilings:ceiling, outerWalls, context, materials };
 }
+
 
 
 
