@@ -95,15 +95,16 @@ export function buildApartment() {
   }
   // Living entrance, internal bedroom doors, and a central bathroom corridor.
   wallSeg(1.85,7.9,3.7,.14,2.55,1.275,true);wallSeg(4.7,7.9,.2,.14,2.55,1.275,true);wallSeg(4.15,7.9,.9,.14,.38,2.36,true);
-  wallSeg(2.7,1.75,.14,3.5);wallSeg(4.4,1.75,.14,3.5);wallSeg(3.55,2.5,1.7,.13,.45,2.325);wallSeg(2.74,2.5,.08,.13);wallSeg(4.01,2.5,.78,.13);
-  wallSeg(.92,3.5,1.84,.13);wallSeg(2.62,3.5,.16,.13);wallSeg(2.19,3.5,.7,.13,.4,2.35);
-  wallSeg(4.49,3.5,.18,.13);wallSeg(6.27,3.5,1.66,.13);wallSeg(5.01,3.5,.86,.13,.4,2.35);
+  // Bedroom access is through the hall SIDE walls, as drawn by both floor-plan door arcs.
+  for(const x of[2.7,4.4]){wallSeg(x,1.315,.14,2.63);wallSeg(x,3.45,.14,.1);wallSeg(x,3.015,.14,.77,.4,2.35);}wallSeg(3.55,2.5,1.7,.13,.45,2.325);wallSeg(2.74,2.5,.08,.13);wallSeg(4.01,2.5,.78,.13);
+  wallSeg(1.35,3.5,2.7,.13);
+  wallSeg(5.75,3.5,2.7,.13);
   wallSeg(4.8,6.96,.13,1.88);wallSeg(4.8,3.8,.13,.6);
   wallSeg(5.15,9.7,.7,.13);wallSeg(6.76,9.7,.68,.13);wallSeg(5.955,9.7,.91,.13,.4,2.35);
   function doorway(x:number,z:number,w:number,rotation=0,door=true,hingeSide=-1,swing=1){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rotation;group.add(g);for(const xx of[-w/2,w/2]){box(xx,1.08,0,.06,2.16,.17,trim,g);box(xx,1.09,.1,.035,2.18,.025,trim,g)}box(0,2.16,0,w+.07,.065,.17,trim,g);
     if(door){const hinge=new THREE.Group();hinge.position.set(hingeSide*w/2,0,0);hinge.rotation.y=swing*hingeSide*Math.PI*.44;g.add(hinge);const leaf=box(-hingeSide*w/2,1.05,0,w-.06,2.1,.038,white,hinge);g.updateMatrixWorld(true);const leafBounds=new THREE.Box3().setFromObject(leaf);colliders.push({minX:leafBounds.min.x,maxX:leafBounds.max.x,minZ:leafBounds.min.z,maxZ:leafBounds.max.z});box(-hingeSide*w*.82,1,.038,.12,.025,.024,steel,hinge);for(const yy of[.25,1,1.8])box(-hingeSide*.025,yy,0,.025,.07,.06,steel,hinge);}
   }
-  doorway(2.19,3.5,.7,0,true,1,-1);doorway(5.01,3.5,.86,0,true,-1,-1);doorway(3.2,2.5,.84,0,true,1,-1);doorway(5.96,9.7,.88,0,true,-1,1);doorway(4.15,7.9,.9,Math.PI,false);box(4.15,1.04,7.94,.82,2.08,.045,white,outerWalls);box(4.46,1.04,7.9,.11,.028,.05,steel,outerWalls);
+  doorway(2.7,3.015,.77,Math.PI/2,true,-1,-1);doorway(4.4,3.015,.77,-Math.PI/2,true,1,-1);doorway(3.2,2.5,.84,0,true,1,-1);doorway(5.96,9.7,.88,0,true,-1,1);doorway(4.15,7.9,.9,Math.PI,false);box(4.15,1.04,7.94,.82,2.08,.045,white,outerWalls);box(4.46,1.04,7.9,.11,.028,.05,steel,outerWalls);
   for(const [x,z,w,d]of [[3.55,3.95,7.1,7.9],[5.95,9.45,2.3,3.1]]){box(x,2.595,z,w,.09,d,wall,ceiling)}
   function switchPlate(x:number,y:number,z:number,rotation=0){const g=new THREE.Group();g.position.set(x,y,z);g.rotation.y=rotation;group.add(g);rounded(0,0,0,.08,.11,.012,trim,.008,g);box(0,0,.01,.027,.045,.004,white,g)}
   function socket(x:number,z:number,rotation=0){const g=new THREE.Group();g.position.set(x,.27,z);g.rotation.y=rotation;group.add(g);box(0,0,0,.14,.085,.012,trim,g);for(const s of[-1,1]){box(s*.034,.005,.008,.018,.005,.002,dark,g).rotation.z=s*.4;box(s*.034,-.018,.008,.004,.012,.002,dark,g)}}
