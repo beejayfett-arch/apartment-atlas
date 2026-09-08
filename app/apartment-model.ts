@@ -41,9 +41,11 @@ export function buildApartment() {
     const m=new THREE.MeshStandardMaterial({color,roughness,metalness});if(kind){m.color.set('#ffffff');m.map=canvasTexture(kind,color);m.bumpMap=m.map;m.bumpScale=kind==='fabric'||kind==='carpet'? .00065:.001}m.userData.referenceMaterial=name;materials[name]=m;return m;
   }
   const wall=mat('paint','#eeeae1',.9),white=mat('joinery','#f6f4ed',.45),trim=mat('trim','#fcfcf7',.55),dark=mat('charcoal','#25282a',.45),black=mat('black hardware','#202122',.35,.4),steel=mat('stainless','#a4adb0',.27,.82),glass=new THREE.MeshPhysicalMaterial({color:'#d0e3e4',roughness:.06,metalness:0,transparent:true,opacity:.17,side:THREE.DoubleSide,depthWrite:false}),wood=mat('oak','#a97a4d',.52,0,'wood'),walnut=mat('walnut','#805838',.5,0,'wood'),tile=mat('marble tile','#d0d2cb',.62,0,'tile'),carpet=mat('carpet','#b9afa0',.97,0,'carpet'),leather=mat('leather','#343431',.6,0,'leather'),linen=mat('linen','#c9bea9',.96,0,'fabric'),cushion=mat('cushion','#967765',.97,0,'fabric'),throwMat=mat('ochre throws','#875635',1,0,'fabric'),rug=mat('rug','#b8b9b1',1,0,'rug'),floral=mat('floral duvet','#e4dce0',1,0,'floral'),brick=mat('balcony brick','#b88d67',.98,0,'brick');
+  const concrete=mat('concrete coping','#b4b1a6',.94);
   const leafMat=mat('leaves','#3f6436',.78),leafLight=mat('young leaves','#73934b',.72),potMat=mat('terracotta','#a75736',.9),soilMat=mat('soil','#35332a',1);
   const sphere=new THREE.SphereGeometry(1,20,12);
-  function box(x:number,y:number,z:number,w:number,h:number,d:number,m:THREE.Material,parent:THREE.Object3D=group){const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh}
+  function box(x:number,y:number,z:number,w:number,h:number,d:number,m:THREE.Material,parent:THREE.Object3D=group){const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);if(m===brick)brickUV(mesh);return mesh}
+  function brickUV(mesh:THREE.Mesh){const g=mesh.geometry,p=g.attributes.position,n=g.attributes.normal,uv=g.attributes.uv;for(let i=0;i<p.count;i++){const x=p.getX(i)+mesh.position.x,y=p.getY(i)+mesh.position.y,z=p.getZ(i)+mesh.position.z;uv.setXY(i,(Math.abs(n.getX(i))>.5?z:x)/.92,(Math.abs(n.getY(i))>.5?z:y)/.912)}uv.needsUpdate=true}
   function ell(x:number,y:number,z:number,w:number,h:number,d:number,m:THREE.Material,parent:THREE.Object3D=group){const mesh=new THREE.Mesh(sphere,m);mesh.scale.set(w,h,d);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh}
   function cyl(x:number,y:number,z:number,r:number,h:number,m:THREE.Material,parent:THREE.Object3D=group,r2?:number){const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r2??r,h,32),m);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh}
   function line(a:number[],b:number[],r:number,m:THREE.Material,parent:THREE.Object3D=group){const start=new THREE.Vector3(...a as [number,number,number]),end=new THREE.Vector3(...b as [number,number,number]);const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,start.distanceTo(end),8),m);mesh.position.copy(start).add(end).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),end.sub(start).normalize());mesh.castShadow=true;parent.add(mesh);return mesh}
@@ -66,8 +68,8 @@ export function buildApartment() {
   function obstacle(x:number,z:number,w:number,d:number){colliders.push({minX:x-w/2,maxX:x+w/2,minZ:z-d/2,maxZ:z+d/2})}
   let floorLayer=0; // A sub-millimetre layer offset avoids coincident finish surfaces in wet rooms and the carpeted bedroom.
   function floor(x:number,z:number,w:number,d:number,m:THREE.MeshStandardMaterial,repeat=.43,rotate=false){const mm=m.clone();if(m.map){mm.map=m.map.clone();mm.map.repeat.set(w/repeat,d/repeat);if(rotate){mm.map.center.set(.5,.5);mm.map.rotation=Math.PI/4;}mm.bumpMap=mm.map}const mesh=box(x,-.065+(floorLayer++)*.0007,z,w,.13,d,mm);return mesh}
-  floor(3.55,3.95,7.1,7.9,tile,.48,true);floor(5.95,9.45,2.3,3.1,tile,.36);floor(5.8,1.75,2.6,3.5,carpet,.6);floor(-.7,6.4,1.4,3,brick,.75);floor(3.55,1.25,1.7,2.5,tile,.34);floor(5.95,10.35,2.3,1.3,tile,.36);
-  function wallSeg(x:number,z:number,w:number,d:number,h=2.55,y=h/2,outer=false){const p=outer?outerWalls:group;const a=box(x,y,z,w,h,d,wall,p);a.name='Wall';if(y-h/2<.1)obstacle(x,z,w,d);if(y-h/2<.1){box(x,.055,z,w+.009,.11,d+.013,trim,p);box(x,2.47,z,w+.035,.045,d+.035,trim,p);box(x,2.51,z,w+.06,.035,d+.06,trim,p)}return a}
+  floor(3.55,3.95,7.1,7.9,tile,.48,true);floor(5.95,9.45,2.3,3.1,tile,.36);floor(5.8,1.75,2.6,3.5,carpet,.6);floor(-.7,6.4,1.4,3,concrete,.75);floor(3.55,1.25,1.7,2.5,tile,.34);floor(5.95,10.35,2.3,1.3,tile,.36);
+  function wallSeg(x:number,z:number,w:number,d:number,h=2.55,y=h/2,outer=false){const p=outer?outerWalls:group;const a=box(x,y,z,w,h,d,wall,p);a.name='Wall';if(outer){const sides:THREE.Material[]=Array(6).fill(wall);sides[w>d?(z<.1?5:4):(x>7?0:1)]=brick;(a as THREE.Mesh).material=sides;brickUV(a);}if(y-h/2<.1)obstacle(x,z,w,d);if(y-h/2<.1){box(x,.055,z,w+.009,.11,d+.013,trim,p);box(x,2.47,z,w+.035,.045,d+.035,trim,p);box(x,2.51,z,w+.06,.035,d+.06,trim,p)}return a}
   // Window-bearing outside edges, with real openings rather than painted rectangles.
   function windowWall(axis:'x'|'z',constant:number,start:number,end:number,openStart:number,openEnd:number,sill:number,top:number){
     const outer=true;if(axis==='x') {wallSeg((start+openStart)/2,constant,openStart-start,.13,2.55,1.275,outer);wallSeg((openEnd+end)/2,constant,end-openEnd,.13,2.55,1.275,outer);wallSeg((openStart+openEnd)/2,constant,openEnd-openStart,.13,sill,sill/2,outer);wallSeg((openStart+openEnd)/2,constant,openEnd-openStart,.13,2.55-top,(2.55+top)/2,outer);windowFrame(axis,constant,openStart,openEnd,sill,top)}
@@ -183,7 +185,7 @@ export function buildApartment() {
   box(6.65,.44,10.45,.63,.86,.62,white);box(6.65,.89,10.45,.66,.055,.65,white);cyl(6.65,.93,10.45,.23,.016,steel);box(6.15,.46,10.61,.61,.89,.61,white);const laundryRing=new THREE.Mesh(new THREE.TorusGeometry(.2,.035,12,48),steel);laundryRing.rotation.y=0;laundryRing.position.set(6.15,.45,10.289);group.add(laundryRing);cyl(6.15,.45,10.277,.168,.018,dark).rotation.x=Math.PI/2;
   obstacle(3.55,.47,1.57,.78);obstacle(1.1,4.6,.52,.55);obstacle(.58,6.82,.7,.37);obstacle(6.65,10.45,.63,.62);obstacle(6.15,10.61,.61,.61);
   // Balcony safety rail and authentic orange brick surrounds.
-  box(-1.4,.52,6.4,.13,1.04,3.13,brick);box(-.7,.52,4.9,1.4,1.04,.13,brick);box(-.7,.52,7.9,1.4,1.04,.13,brick);box(-1.4,1.08,6.4,.17,.055,3.2,trim);for(const z of[4.9,7.9])box(-.7,1.08,z,1.55,.055,.17,trim);obstacle(-1.4,6.4,.13,3.13);obstacle(-.7,4.9,1.4,.13);obstacle(-.7,7.9,1.4,.13);
+  box(-1.4,.52,6.4,.13,1.04,3.13,brick);box(-.7,.52,4.9,1.4,1.04,.13,brick);box(-.7,.52,7.9,1.4,1.04,.13,brick);box(-1.4,1.08,6.4,.17,.055,3.2,concrete);for(const z of[4.9,7.9])box(-.7,1.08,z,1.55,.055,.17,concrete);obstacle(-1.4,6.4,.13,3.13);obstacle(-.7,4.9,1.4,.13);obstacle(-.7,7.9,1.4,.13);
   // Soft natural context at real windows, not a fabricated photo projection.
   const context = new THREE.Group();context.name='Inferred exterior context';group.add(context);const trunkM=mat('bark','#73705a',1),treeM=mat('tree foliage','#687956',1);
   function tree(x:number,z:number,h:number){line([x,-2,z],[x,h,z],.07,trunkM,context);for(let i=0;i<12;i++){const a=i*2.4,y=h*(.25+rand()*.75),xx=x+Math.cos(a)*(.5+rand()),zz=z+Math.sin(a)*(.5+rand());line([x,y-.6,z],[xx,y,zz],.025,trunkM,context);ell(xx,y,zz,.5+rand()*.45,.35+rand()*.3,.5+rand()*.45,treeM,context)}}tree(1.2,-3,4.2);tree(5.6,-4.5,3.7);tree(-3.6,5.2,4);tree(-4.2,8,3.6);
@@ -199,6 +201,7 @@ export function buildApartment() {
   ];
   return { group, colliders, rooms, ceiling, ceilings:ceiling, outerWalls, context, materials };
 }
+
 
 
 

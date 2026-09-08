@@ -4,7 +4,7 @@ import * as THREE from 'three';
 // These are appearance reconstructions, not measured PBR scans.
 export async function applyReferenceMaterials(group:THREE.Object3D,isDisposed:()=>boolean) {
  const loader=new THREE.TextureLoader();
- const files:Record<string,string>={'marble tile':'floor-marble-albedo.png','rug':'rug-vintage-albedo.png','leather':'leather-charcoal-albedo.png','oak':'oak-photo-albedo.png','walnut':'oak-photo-albedo.png'};
+ const files:Record<string,string>={'marble tile':'floor-marble-albedo.png','rug':'rug-vintage-albedo.png','leather':'leather-charcoal-albedo.png','oak':'oak-photo-albedo.png','walnut':'oak-photo-albedo.png','balcony brick':'brick-photo-albedo.png'};
  const textures:THREE.Texture[]=[];
  const results=await Promise.all(Object.entries(files).map(async([name,file])=>{
   const texture=await loader.loadAsync('/textures/'+file);
@@ -23,15 +23,17 @@ export async function applyReferenceMaterials(group:THREE.Object3D,isDisposed:()
    const map=source.clone();const previous=material.map;
    if(previous){map.repeat.copy(previous.repeat);map.offset.copy(previous.offset);map.center.copy(previous.center);map.rotation=previous.rotation;}
    if(name==='marble tile')map.repeat.multiplyScalar(.5); // Map contains two tiles per edge.
+   if(name==='balcony brick')map.repeat.set(.92/1.3,.912/1.3);
    if(name==='leather')map.repeat.set(1.4,1.4);
    if(name==='oak'||name==='walnut'){map.center.set(.5,.5);map.rotation+=Math.PI/2;map.repeat.set(2,1);}
    map.needsUpdate=true;textures.push(map);
    material.map=map;material.bumpMap=map;material.color.set(name==='walnut'?'#b7a18a':'#ffffff');
-   material.bumpScale=name==='marble tile'?.0035:name==='leather'?.0006:name==='oak'||name==='walnut'?.0008:.001;
+   material.bumpScale=name==='balcony brick'?.007:name==='marble tile'?.0035:name==='leather'?.0006:name==='oak'||name==='walnut'?.0008:.001;
    material.roughness=name==='leather'?.38:name==='marble tile'?.4:name==='oak'||name==='walnut'?.38:.98;
    material.needsUpdate=true;
   }
  });
  return ()=>textures.forEach(t=>t.dispose());
 }
+
 

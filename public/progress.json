@@ -1,6 +1,6 @@
 {
-  "status": "Public preview · outdoor panorama and material update",
-  "updated": "7 September 2026 · public update",
+  "status": "Public preview · mobile and exterior refinement",
+  "updated": "8 September 2026 · mobile and brickwork",
   "entries": [
     {
       "stage": "01 / Source assessment",
@@ -84,6 +84,13 @@
       "title": "Your park views now surround the apartment.",
       "detail": "The three supplied screenshots were reconstructed into one wrapped panorama, with phone controls and arrows excluded. The balcony and bedroom renders were inspected. Timber uses a new reference-derived grain map; leather, tile and fabric surface response were adjusted. The panorama is approximate, with synthesized missing directions. Smaller public updates will make progress easier to inspect.",
       "image": "/reviews/balcony-panorama.png"
+    },
+    {
+      "stage": "14 / Mobile and brickwork",
+      "state": "Lead inspected at 390 px",
+      "title": "Larger phone controls and properly scaled brick surfaces.",
+      "detail": "Walking buttons are 52 px, view controls 44 px, and full-screen mode works within the page. The 390 px layout has no horizontal page overflow. Rendering stops when the view is stationary or the page is hidden; coarse-pointer devices use smaller reflection captures and lower pixel density. Photo-derived brick is mapped at a consistent approximate physical scale on balcony and outward wall faces, with concrete balcony flooring and coping. Phone fullscreen and balcony renders were inspected; independent review was interrupted by the usage limit. Actual-device performance remains unmeasured.",
+      "image": "/reviews/mobile-brickwork.png"
     }
   ]
 }
