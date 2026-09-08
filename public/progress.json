@@ -1,6 +1,6 @@
 {
-  "status": "Public preview · bedroom access corrected",
-  "updated": "8 September 2026 · mobile and brickwork",
+  "status": "Public preview · reference-derived fabrics",
+  "updated": "9 September 2026 · fabric comparison",
   "entries": [
     {
       "stage": "01 / Source assessment",
@@ -98,6 +98,13 @@
       "title": "Both bedroom entrances now open from the corridor.",
       "detail": "The builder moved both entrances to the corridor side walls, restored the bedroom front walls, and matched the inward swings to the plan. A separate critic verified the door topology. The lead inspected the rendered overview and all eight room landings remain reachable in the collision-grid check. Exact room dimensions and photographic fidelity remain under refinement.",
       "image": "/reviews/corridor-doors.png"
+    },
+    {
+      "stage": "16 / Fabric comparison",
+      "state": "Independent rendered review",
+      "title": "Botanical bedding and softer copper throws.",
+      "detail": "Two albedo maps were generated separately from the original photographs. An independent critic inspected actual room renders and identified overly dense flowers and overly orange throws; both were corrected. The final throw review found useful improvement with no visible seams or missing textures. Bedding and cushion geometry remain simplified. Texture loading retains successful materials if another image fails.",
+      "image": "/reviews/fabric-bedroom-final.png"
     }
   ]
 }
