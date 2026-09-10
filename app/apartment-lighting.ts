@@ -107,6 +107,8 @@ export function createApartmentLighting(
   const assignments: Assignment[] = [];
   const bindings: MaterialBinding[] = [];
   const copies = new Map<string, THREE.MeshStandardMaterial>();
+  const dynamicGroups=new Map<THREE.Object3D,THREE.MeshStandardMaterial[]>();
+  const dynamicBindings=new Map<THREE.MeshStandardMaterial,Probe>();
   const meshPosition = new THREE.Vector3();
   model.group.updateMatrixWorld(true);
   model.group.traverse(object => {
@@ -153,16 +155,22 @@ export function createApartmentLighting(
       material.envMapIntensity = .72;
       if (changeShader) material.needsUpdate = true;
     }
+    for(const [material,probe] of dynamicBindings){const next=environmentFor(probe)?.texture??null;if(Boolean(material.envMap)!==Boolean(next))material.needsUpdate=true;material.envMap=next;material.envMapIntensity=.72}
+  }
+  function syncFurniture(){
+    for(const object of model.group.children){if(!object.userData.furnitureId)continue;let surfaces=dynamicGroups.get(object);if(!surfaces){surfaces=[];const localCopies=new Map<THREE.Material,THREE.MeshStandardMaterial>();object.traverse(child=>{const mesh=child as THREE.Mesh;if(!mesh.isMesh)return;const local=(source:THREE.Material)=>{if(!(source as THREE.MeshStandardMaterial).isMeshStandardMaterial)return source;let copy=localCopies.get(source);if(!copy){copy=(source as THREE.MeshStandardMaterial).clone();copy.envMap=null;copy.needsUpdate=true;localCopies.set(source,copy);surfaces!.push(copy)}return copy};mesh.material=Array.isArray(mesh.material)?mesh.material.map(local):local(mesh.material)});dynamicGroups.set(object,surfaces)}object.getWorldPosition(meshPosition);const probe=probeAt(meshPosition);surfaces.forEach(m=>dynamicBindings.set(m,probe))}
+    for(const [object,surfaces] of dynamicGroups)if(!object.parent){surfaces.forEach(m=>{dynamicBindings.delete(m);m.dispose()});dynamicGroups.delete(object)}
+    refresh();
   }
   function setDaylight(day: boolean) {
     if (disposed) return;
     const changed = daylight !== day;
     daylight = day;
-    sun.intensity = day ? 1.6 : .16;
-    sky.intensity = day ? .3 : .16;
-    for (const light of windows) light.intensity = light.userData.dayIntensity * (day ? 1 : .12);
+    sun.intensity = day ? 1.9 : .16;
+    sky.intensity = day ? .34 : .16;
+    for (const light of windows) light.intensity = light.userData.dayIntensity * (day ? 1.2 : .12);
     for (const light of fixtures) light.intensity = day ? 1.2 : 7;
-    renderer.toneMappingExposure = day ? 1.05 : 1.12;
+    renderer.toneMappingExposure = day ? 1.42 : 1.12;
     scene.background = new THREE.Color(day ? '#c5d5e2' : '#526479');
     if (changed) {
       queue = probes.filter(probe => !environmentFor(probe));
@@ -223,6 +231,7 @@ export function createApartmentLighting(
         if (material.envMap) material.needsUpdate = true;
         material.envMap = null;
       }
+      for(const material of dynamicBindings.keys()){if(material.envMap)material.needsUpdate=true;material.envMap=null}
       renderer.shadowMap.autoUpdate = false;
       renderer.shadowMap.needsUpdate = true;
       renderer.autoClear = true;
@@ -269,6 +278,7 @@ export function createApartmentLighting(
     queue = [];
     for (const { mesh, original } of assignments) mesh.material = original;
     for (const { material } of bindings) material.dispose();
+    for(const surfaces of dynamicGroups.values())surfaces.forEach(m=>m.dispose());dynamicBindings.clear();dynamicGroups.clear();
     for (const probe of probes) { probe.day?.dispose(); probe.evening?.dispose(); }
     sun.shadow.map?.dispose();
     sun.shadow.mapPass?.dispose();
@@ -279,7 +289,7 @@ export function createApartmentLighting(
     renderer.toneMappingExposure = originalExposure;
     pmrem.dispose();
   }
-  return { step, refresh, afterTextures, setDaylight, dispose, sun, sky, rig, probes, get pending() { return queue.length; } };
+  return { step, refresh, syncFurniture, afterTextures, setDaylight, dispose, sun, sky, rig, probes, get pending() { return queue.length; } };
 }
 
 

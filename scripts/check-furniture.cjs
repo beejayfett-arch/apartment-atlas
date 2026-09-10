@@ -1,0 +1,15 @@
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),ts=require('typescript'),THREE=require('three');
+const modules=new Map();function load(name){const filename=path.resolve('app',name+'.ts');if(modules.has(filename))return modules.get(filename);const exports={};modules.set(filename,exports);const compiled=ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;new Function('require','exports',compiled)(id=>id.startsWith('./')?load(id.slice(2)):require(id),exports);return exports}
+const context=new Proxy({createLinearGradient:()=>({addColorStop(){}})},{get:(t,k)=>k in t?t[k]:()=>{}});global.document={createElement:()=>({width:0,height:0,getContext:()=>context})};global.window=new EventTarget();
+const model=load('apartment-model').buildApartment();assert.equal(model.editable.length,9);assert.equal(new Set(model.editable.map(o=>o.userData.furnitureId)).size,9);
+const canvas=new EventTarget();canvas.getBoundingClientRect=()=>({left:0,top:0,width:800,height:600});canvas.setPointerCapture=()=>{};
+const scene=new THREE.Scene();scene.add(model.group);const editor=load('furniture-editor').createFurnitureEditor(model,scene,new THREE.PerspectiveCamera(),canvas,()=>{},()=>{});let state;window.addEventListener('atlas-editor-state',e=>state=e.detail);editor.setActive(true);const action=detail=>window.dispatchEvent(new CustomEvent('atlas-edit',{detail}));
+const initial=JSON.parse(JSON.stringify(state.items));assert(load('layout-data').validLayout(initial));
+action({type:'select',id:'office-chair'});action({type:'move',dx:.2});assert(Math.abs(state.items.find(v=>v.id==='office-chair').x-1.3)<.01);action({type:'rotate',angle:Math.PI/12});assert.equal(state.items.find(v=>v.id==='office-chair').rotation,Math.PI/12);
+action({type:'remove'});assert.equal(state.items.find(v=>v.id==='office-chair').visible,false);action({type:'undo'});assert.equal(state.items.find(v=>v.id==='office-chair').visible,true);action({type:'redo'});assert.equal(state.items.find(v=>v.id==='office-chair').visible,false);
+action({type:'select',id:'dining-table'});action({type:'replace',kind:'coffee-table',room:'dining'});assert(state.items.some(v=>v.kind==='coffee-table'&&v.visible));assert(!state.items.find(v=>v.id==='dining-table').visible);
+action({type:'add',kind:'upholstered-bed',room:'bedroom2'});assert(state.items.some(v=>v.kind==='upholstered-bed'&&v.visible));assert(load('layout-data').validLayout(state.items));
+const selected=state.selected,before=state.items.find(v=>v.id===selected);action({type:'move',dx:100});assert.equal(state.items.find(v=>v.id===selected).x,before.x);
+action({type:'reset'});assert.deepEqual(state.items,initial);action({type:'undo'});assert(state.items.some(v=>v.kind==='upholstered-bed'));
+assert(!load('layout-data').validLayout([...initial,initial[0]]));assert(!load('layout-data').validLayout(initial.map((v,i)=>i? v:{...v,x:Infinity})));
+editor.dispose();console.log('PASS: original grouping, move, rotation, remove, undo/redo, replace, add bed, boundary rejection, reset, layout validation.');

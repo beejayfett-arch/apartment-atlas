@@ -32,6 +32,9 @@ export async function applyReferenceMaterials(group:THREE.Object3D,isDisposed:()
    material.map=map;material.bumpMap=map;material.color.set(name==='walnut'?'#b7a18a':'#ffffff');
    material.bumpScale=name==='balcony brick'?.007:name==='marble tile'?.0035:name==='leather'?.0006:name==='oak'||name==='walnut'?.0008:.001;
    material.roughness=name==='leather'?.38:name==='marble tile'?.4:name==='oak'||name==='walnut'?.38:.98;
+   if(name==='leather'){
+     const canvas=document.createElement('canvas');canvas.width=canvas.height=256;const ctx=canvas.getContext('2d')!;ctx.fillStyle='#ababab';ctx.fillRect(0,0,256,256);ctx.filter='blur(14px)';for(let i=0;i<48;i++){const grey=110+(i*37%100);ctx.fillStyle='rgba('+grey+','+grey+','+grey+',.32)';ctx.beginPath();ctx.ellipse((i*73)%256,(i*117)%256,16+(i%6)*9,10+(i%4)*5,i*.7,0,Math.PI*2);ctx.fill()}const rough=new THREE.CanvasTexture(canvas);rough.wrapS=rough.wrapT=THREE.RepeatWrapping;rough.repeat.set(1.4,1.4);textures.push(rough);material.roughnessMap=rough;material.roughness=.68;
+   }
    if(name==='floral duvet'){material.bumpMap=null;material.bumpScale=0;}if(name==='ochre throws'){material.bumpScale=.0004;material.onBeforeCompile=shader=>{shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>','#include <map_fragment>\nfloat fabricLuma=dot(diffuseColor.rgb,vec3(0.2126,0.7152,0.0722));\ndiffuseColor.rgb=(mix(vec3(fabricLuma),diffuseColor.rgb,0.70)*0.78+vec3(0.18)*0.22)*vec3(0.94,0.90,0.85);');};material.customProgramCacheKey=()=> 'soft-copper-fabric-v1';}
    material.needsUpdate=true;
   }

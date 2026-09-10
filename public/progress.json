@@ -1,6 +1,6 @@
 {
-  "status": "Public preview · reference-derived fabrics",
-  "updated": "9 September 2026 · fabric comparison",
+  "status": "Furniture editing and graphics refinement",
+  "updated": "10 September 2026",
   "entries": [
     {
       "stage": "01 / Source assessment",
@@ -105,6 +105,19 @@
       "title": "Botanical bedding and softer copper throws.",
       "detail": "Two albedo maps were generated separately from the original photographs. An independent critic inspected actual room renders and identified overly dense flowers and overly orange throws; both were corrected. The final throw review found useful improvement with no visible seams or missing textures. Bedding and cushion geometry remain simplified. Texture loading retains successful materials if another image fails.",
       "image": "/reviews/fabric-bedroom-final.png"
+    },
+    {
+      "stage": "Furniture editing",
+      "state": "Verified locally",
+      "title": "Rearrange the apartment and keep your layouts.",
+      "detail": "Select and drag existing furniture, rotate in 15-degree steps, remove or replace it, and undo changes. Eleven library pieces include a padded channel-headboard bed with lofted pillows and draped bedding. Account-linked layouts are stored on the server, with file export and import. The newer upholstered-bed photo was not available, so that design is explicitly inferred."
+    },
+    {
+      "stage": "Independent graphics review",
+      "state": "Refined",
+      "title": "Brighter daylight, contact shadows and less uniform upholstery.",
+      "detail": "A separate critic compared actual living-room renders with both source photographs. The largest issues were rigid cushions and grey, uniform daylight. This pass adds cushion compression and folds, finer fabric texture, varied leather roughness, short-range ambient occlusion, softer shadow filtering and brighter window contribution. Furniture reflections refresh after edits. It remains a reconstruction: cushion silhouettes, specular highlights and missing viewpoints still differ from the photos.",
+      "image": "/reviews/editor-lighting-refined.png"
     }
   ]
 }
