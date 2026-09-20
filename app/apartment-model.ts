@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {botanicalPlant,photoTable,woodFinish,brushedSteel,detailBox} from './object-details';
 import { Reflector } from 'three/examples/jsm/objects/Reflector.js';
 
 export type Collider = { minX:number; maxX:number; minZ:number; maxZ:number };
@@ -124,7 +125,7 @@ export function buildApartment() {
   fan(2.4,5.6);fan(1.3,1.7);fan(5.8,1.7);
   function ceilingLight(x:number,z:number){cyl(x,2.5,z,.125,.055,trim);const m=new THREE.MeshStandardMaterial({color:'#fffbed',emissive:'#fff3d5',emissiveIntensity:.45});ell(x,2.46,z,.13,.045,.13,m)}ceilingLight(5.95,7.8);ceilingLight(3.55,1.4);ceilingLight(5.95,10.3);
   // Plants have individual curved stems and leaf blades, rather than flat billboards.
-  function plant(x:number,z:number,h=.65,r=.13){const p=new THREE.Group();p.position.set(x,0,z);group.add(p);cyl(0,r,0,r,r*2,potMat,p,r*.75);cyl(0,r*1.96,0,r*.88,.015,soilMat,p);for(let i=0;i<9;i++){const angle=i*2.4,top=r*2+h*(.45+rand()*.55),xx=Math.cos(angle)*h*.3,zz=Math.sin(angle)*h*.3;line([0,r*1.9,0],[xx,top,zz],.006,leafMat,p);for(let j=0;j<3;j++){const t=.5+j*.21,leaf=ell(xx*t+(j%2?.045:-.045),r*2+(top-r*2)*t,zz*t,h*.11,h*.025,h*.052,i%3?leafMat:leafLight,p);leaf.rotation.z=(j%2?1:-1)*.4;leaf.rotation.y=angle;}}return p}
+  function plant(x:number,z:number,h=.65,r=.13){const p=botanicalPlant(h,r);p.position.set(x,0,z);group.add(p);return p}
   plant(.55,4.8,.78,.13);plant(1.32,3.92,.6,.115);plant(4.45,4.02,.8,.14);plant(-.92,5.15,.6,.14);
   // Dark L-shaped sectional with cream seats, individual seams and warm throws.
   beginFurniture();
@@ -148,17 +149,22 @@ export function buildApartment() {
   beginFurniture();
   const rugM=rug.clone();const rugMesh=box(2.05,.015,5.91,2.38,.023,2.6,rugM);rugMesh.rotation.y=-.035;
   endFurniture('rug','Patterned living rug');
-  // Media cabinet, live-looking ocean screen drawn locally, and timber occasional table.
+  // Thin television and gloss-black media console, following the living-room photo.
   beginFurniture();
   const tv=new THREE.Group();tv.position.set(.32,0,5.83);tv.rotation.y=Math.PI/2;group.add(tv);
-  box(0,.29,0,1.2,.52,.38,leather,tv);box(0,.565,0,1.24,.035,.42,black,tv);for(const x of[-.59,0,.59])box(x,.3,.21,.025,.48,.025,steel,tv);box(0,.29,.2,1.15,.018,.02,steel,tv);for(const x of[-.3,.3]){box(x,.31,.218,.022,.32,.018,glass,tv);cyl(x,.42,.239,.019,.019,steel,tv).rotation.x=Math.PI/2}
-  for(let i=0;i<12;i++)box(-.44+i*.045,.18,.02,.032,.17,.16,i%2?wood:linen,tv);
-  rounded(0,1.055,0,1.08,.63,.035,black,.012,tv);
-  const ocean=document.createElement('canvas');ocean.width=768;ocean.height=420;const oc=ocean.getContext('2d')!;const grad=oc.createLinearGradient(0,0,350,420);grad.addColorStop(0,'#127d91');grad.addColorStop(.56,'#37aaab');grad.addColorStop(.7,'#c4ddd0');grad.addColorStop(.73,'#e4dfc9');grad.addColorStop(1,'#d5bb98');oc.fillStyle=grad;oc.fillRect(0,0,768,420);for(let i=0;i<7000;i++){const x=rand()*768,y=rand()*280;oc.fillStyle=`rgba(232,251,241,${rand()*.36})`;oc.fillRect(x,y,rand()*10+1,rand()*2+1)}for(let y=180;y<305;y+=16){oc.strokeStyle='rgba(246,253,242,.55)';oc.lineWidth=2;oc.beginPath();for(let x=0;x<768;x+=5)oc.lineTo(x,y+Math.sin(x*.034+y)*9);oc.stroke()}
-  const oceanT=new THREE.CanvasTexture(ocean);oceanT.colorSpace=THREE.SRGBColorSpace;const screenM=new THREE.MeshBasicMaterial({map:oceanT});box(0,1.055,.025,1.038,.58,.002,screenM,tv);for(const x of[-.35,.35]){line([x,.75,0],[x-.08,.59,.13],.012,black,tv);line([x,.75,0],[x+.08,.59,-.1],.012,black,tv)}obstacle(.32,5.83,.43,1.25);
+  const lacquer=new THREE.MeshPhysicalMaterial({color:'#111619',roughness:.23,clearcoat:.6,clearcoatRoughness:.18}),tvTrim=new THREE.MeshStandardMaterial({color:'#949b9e',metalness:.8,roughness:.28});
+  for(const y of[.075,.535])detailBox(tv,0,y,0,1.2,.035,.38,lacquer);for(const x of[-.59,.05,.59])detailBox(tv,x,.3,0,.023,.46,.38,lacquer);detailBox(tv,0,.3,-.175,1.17,.44,.014,lacquer);detailBox(tv,-.27,.288,0,.62,.022,.35,lacquer);
+  for(const y of[.18,.405]){detailBox(tv,.32,y,.187,.51,.207,.02,lacquer);cyl(.32,y,.205,.012,.013,tvTrim,tv).rotation.x=Math.PI/2}for(const x of[-.43,-.11]){detailBox(tv,x,.30,.187,.29,.407,.005,glass,.001);cyl(x+.09,.30,.199,.009,.01,tvTrim,tv).rotation.x=Math.PI/2}
+  for(const x of[-.5,.5])for(const z of[-.12,.12])detailBox(tv,x,.035,z,.055,.07,.05,lacquer);
+  for(let i=0;i<8;i++)detailBox(tv,-.48+i*.057,.18,.02,.039,.16,.19,i%3?linen:dark,.001);
+  detailBox(tv,0,1.055,-.017,1.075,.617,.028,black,.004);detailBox(tv,0,.955,-.039,.68,.29,.043,black,.012);
+  detailBox(tv,0,1.055,.001,1.074,.616,.009,tvTrim,.002);detailBox(tv,0,1.055,.007,1.064,.606,.004,black,.001);
+  const screenM=new THREE.MeshBasicMaterial({color:'#232e33'});screenM.userData.referenceMaterial='television picture';const screenGeometry=new THREE.PlaneGeometry(1.054,.594),screenUV=screenGeometry.attributes.uv;
+  [[1079,436],[1215,437],[1080,503],[1219,517]].forEach(([x,y],i)=>screenUV.setXY(i,x/1704,1-y/864));const screen=new THREE.Mesh(screenGeometry,screenM);screen.position.set(0,1.055,.011);tv.add(screen);
+  for(const x of[-.35,.35]){line([x,.76,-.005],[x-.065,.558,.13],.008,tvTrim,tv);line([x,.76,-.005],[x+.065,.558,-.11],.008,tvTrim,tv)}obstacle(.32,5.83,.43,1.25);
   endFurniture('media','Television and cabinet');
   beginFurniture();
-  box(.58,.48,6.82,.7,.055,.37,walnut);for(const x of[.29,.87])for(const z of[6.67,6.97])line([x,.04,z],[x*.95+.025,.46,z],.025,walnut);
+  const occasionalWood=woodFinish('#826249');detailBox(group,.58,.48,6.82,.7,.025,.37,occasionalWood,.007);for(const x of[.29,.87])for(const z of[6.67,6.97])line([x,.04,z],[x*.95+.025,.46,z],.017,occasionalWood);
   obstacle(.58,6.82,.7,.37);
   endFurniture('side-table','Timber side table');
   beginFurniture();
@@ -174,23 +180,25 @@ export function buildApartment() {
   for(const x of[.9,6.27]){box(x,1.17,3.17,1.72,2.34,.56,white);for(const xx of[x-.42,x+.42]){box(xx,1.17,2.872,.82,2.23,.018,white);box(xx+.3,1.05,2.852,.018,.24,.027,steel)}box(x,2.36,3.17,1.8,.045,.61,trim);obstacle(x,3.17,1.8,.6)}
   beginFurniture();
   // Timber bed with floral linen in the carpeted right bedroom.
+  const bedWood=woodFinish('#a6815d');
+  function bedBox(x:number,y:number,z:number,w:number,h:number,d:number,m:THREE.Material,parent:THREE.Object3D){return detailBox(parent,x,y,z,w,h,d,m,.003)}
   const bedroomFurniture = new THREE.Group(); bedroomFurniture.position.x=7.1; bedroomFurniture.scale.x=-1; group.add(bedroomFurniture);
-  box(1.15,.29,1.27,2.14,.15,1.64,wood,bedroomFurniture);for(const x of[.13,2.17])for(const z of[.49,2.05])box(x,.26,z,.1,.5,.1,wood,bedroomFurniture);
+  for(const z of[.49,2.05])bedBox(1.15,.29,z,2.14,.17,.055,bedWood,bedroomFurniture);for(let i=0;i<9;i++)bedBox(.25+i*.22,.33,1.27,.11,.025,1.5,bedWood,bedroomFurniture);for(const x of[.13,2.17])for(const z of[.49,2.05])bedBox(x,.26,z,.1,.5,.1,bedWood,bedroomFurniture);
   // The reference headboard has open vertical timber slats below a broad top rail.
-  const verticalWood=wood.clone();verticalWood.map=wood.map!.clone();verticalWood.map.center.set(.5,.5);verticalWood.map.rotation=Math.PI/2;verticalWood.bumpMap=verticalWood.map;
-  for(const z of[.47,2.07])box(.12,.7,z,.11,1.08,.105,verticalWood,bedroomFurniture);box(.12,1.12,1.27,.11,.15,1.64,wood,bedroomFurniture);box(.12,1.22,1.27,.17,.065,1.73,wood,bedroomFurniture);box(.12,.72,1.27,.09,.105,1.61,wood,bedroomFurniture);for(let i=0;i<11;i++)box(.12,.914,.56+i*.142,.068,.3,.058,verticalWood,bedroomFurniture);
+  const verticalWood=bedWood.clone();verticalWood.map=bedWood.map!.clone();verticalWood.map.center.set(.5,.5);verticalWood.map.rotation=Math.PI/2;verticalWood.bumpMap=verticalWood.map;
+  for(const z of[.47,2.07])bedBox(.12,.7,z,.11,1.08,.105,verticalWood,bedroomFurniture);bedBox(.12,1.12,1.27,.11,.15,1.64,bedWood,bedroomFurniture);bedBox(.12,1.22,1.27,.17,.065,1.73,bedWood,bedroomFurniture);bedBox(.12,.72,1.27,.09,.105,1.61,bedWood,bedroomFurniture);for(let i=0;i<11;i++)bedBox(.12,.914,.56+i*.142,.068,.3,.058,verticalWood,bedroomFurniture);
   rounded(1.15,.48,1.27,2.03,.31,1.56,linen,.075,bedroomFurniture);
   // One continuous duvet surface rolls over the mattress sides. Folds are broad, shallow and asymmetric.
   const duvetGeometry=new THREE.PlaneGeometry(2,2,96,72),duvetPositions=duvetGeometry.attributes.position,duvetUV=duvetGeometry.attributes.uv;
-  function clothEdge(t:number,flat:number,roll:number){const a=Math.abs(t),q=Math.max(0,(a-.85)/.15);return {p:Math.sign(t)*(a<=.85?a*flat/.85:flat+roll*Math.sin(q*Math.PI/2)),drop:.255*(1-Math.cos(q*Math.PI/2))}}
+  function clothEdge(t:number,flat:number,roll:number){const a=Math.abs(t),q=Math.max(0,(a-.85)/.15);return {p:Math.sign(t)*(a<=.85?a*flat/.85:flat+roll*Math.sin(q*Math.PI/2)),drop:.31*(1-Math.cos(q*Math.PI/2))}}
   for(let i=0;i<duvetPositions.count;i++){
     const u=duvetPositions.getX(i),v=duvetPositions.getY(i),ex=clothEdge(u,.96,.073),ez=clothEdge(v,.71,.095),x=1.17+ex.p,z=1.27+ez.p;
-    const edgeDrop=ex.drop+ez.drop-ex.drop*ez.drop/.255;
-    const broad=.012*Math.sin(ex.p*3.6+ez.p*2.1)*Math.cos(ez.p*2.8);
-    const headFold=.016*Math.exp(-Math.pow((x-.79)/.11,2))*(.55+.45*Math.cos(ez.p*3));
-    const diagonal=.011*Math.exp(-Math.pow((ex.p-.45*ez.p-.32)/.12,2))-.006*Math.exp(-Math.pow((ex.p-.45*ez.p-.47)/.085,2));
-    const edgeGather=(edgeDrop/.255)*.006*Math.sin(ex.p*11+ez.p*9+.7);
-    duvetPositions.setXYZ(i,x,.696+ broad+headFold+diagonal-edgeDrop+edgeGather,z);
+    const edgeDrop=ex.drop+ez.drop-ex.drop*ez.drop/.31;
+    const broad=.005*Math.sin(ex.p*3.6+ez.p*2.1)*Math.cos(ez.p*2.8);
+    const headFold=.008*Math.exp(-Math.pow((x-.79)/.11,2))*(.55+.45*Math.cos(ez.p*3));
+    const diagonal=.006*Math.exp(-Math.pow((ex.p-.45*ez.p-.32)/.12,2))-.006*Math.exp(-Math.pow((ex.p-.45*ez.p-.47)/.085,2));
+    const edgeGather=(edgeDrop/.31)*.006*Math.sin(ex.p*11+ez.p*9+.7);
+    duvetPositions.setXYZ(i,x,.650+ broad+headFold+diagonal-edgeDrop+edgeGather,z);
     // Keep the previous metre-based floral UV density and the shared floral material unchanged.
     duvetUV.setXY(i,ex.p,1-ez.p);
   }
@@ -200,30 +208,42 @@ export function buildApartment() {
     const pg=new THREE.SphereGeometry(1,52,32),pp=pg.attributes.position,puv=pg.attributes.uv;
     const sp=(a:number,p:number)=>Math.sign(a)*Math.pow(Math.abs(a),p);
     for(let i=0;i<pp.count;i++){const a=pp.getX(i),b=pp.getY(i),c=pp.getZ(i),x=sp(a,.43)*(.25+k*.012),z=sp(c,.40)*(.34-k*.008);let y=sp(b,.82)*(.105+k*.012);y+=.004*Math.sin(z*9+k)*Math.max(0,b)-.007*Math.exp(-Math.pow((x-.14)/.05,2))*Math.max(0,b);pp.setXYZ(i,x,y,z);puv.setXY(i,x+.19+k*.23,1-z)}
-    pg.computeVertexNormals();const pillow=new THREE.Mesh(pg,floral);pillow.position.set(.45+k*.025,.803+k*.005,[.875,1.665][k]);pillow.rotation.set(k?-.035:.02,k?-.08:.055,-.09);pillow.name='Lofted floral pillow';pillow.castShadow=true;pillow.receiveShadow=true;bedroomFurniture.add(pillow);
+    pg.computeVertexNormals();const pillow=new THREE.Mesh(pg,floral);pillow.position.set(.45+k*.025,.758+k*.005,[.875,1.665][k]);pillow.rotation.set(k?-.035:.02,k?-.08:.055,-.09);pillow.name='Lofted floral pillow';pillow.castShadow=true;pillow.receiveShadow=true;bedroomFurniture.add(pillow);
   }
-  box(2.18,.2,1.27,.06,.28,1.65,wood,bedroomFurniture);obstacle(5.95,1.27,2.14,1.64);box(.45,.58,2.61,.65,.05,.44,white,bedroomFurniture);box(.45,.3,2.61,.57,.55,.4,white,bedroomFurniture);
+  bedBox(2.18,.2,1.27,.06,.28,1.65,bedWood,bedroomFurniture);obstacle(5.95,1.27,2.14,1.64);bedBox(.45,.58,2.61,.65,.05,.44,white,bedroomFurniture);bedBox(.45,.3,2.61,.57,.55,.4,white,bedroomFurniture);
   endFurniture('timber-bed','Timber bed and nightstand');
   // Galley cabinetry: east-side fridge and sink, west-side cooking run.
-  function cabinet(x:number,z:number,w:number,d:number,face:'east'|'west',drawers=false){box(x,.445,z,w,.79,d,white);box(x,.065,z,w-.08,.13,d-.05,dark);rounded(x,.875,z,w+.055,.065,d+.04,white,.025);const fx=x+(face==='east'?1:-1)*(w/2+.013);const splits=drawers?4:1;for(let i=0;i<splits;i++){const h=.72/splits;box(fx,.13+h/2+i*h,z,.022,h-.015,d-.035,white);box(fx+(face==='east'?.019:-.019),.13+h*.72+i*h,z,.028,.016,drawers?d*.43:.12,black)}obstacle(x,z,w,d)}
+  const kitchenSteel=brushedSteel();
+  function roundedPath(path:THREE.Path,w:number,d:number,r:number,cx=0,cy=0){const x=cx-w/2,y=cy-d/2;path.moveTo(x+r,y);path.lineTo(x+w-r,y);path.quadraticCurveTo(x+w,y,x+w,y+r);path.lineTo(x+w,y+d-r);path.quadraticCurveTo(x+w,y+d,x+w-r,y+d);path.lineTo(x+r,y+d);path.quadraticCurveTo(x,y+d,x,y+d-r);path.lineTo(x,y+r);path.quadraticCurveTo(x,y,x+r,y)}
+  function counter(x:number,z:number,w:number,d:number,sink=false){if(!sink){detailBox(group,x,.884,z,w,.037,d,white,.013);return}const shape=new THREE.Shape();roundedPath(shape,w,d,.012);const hole=new THREE.Path();roundedPath(hole,.43,.6,.04,0,z-8.64);shape.holes.push(hole);const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:.03,bevelEnabled:true,bevelSize:.003,bevelThickness:.003,bevelSegments:2,steps:1}),white);mesh.rotation.x=-Math.PI/2;mesh.position.set(x,.867,z);mesh.castShadow=mesh.receiveShadow=true;group.add(mesh)}
+  function handle(x:number,y:number,z:number,side:number){for(const yy of[y-.053,y+.053])detailBox(group,x+side*.015,yy,z,.035,.014,.014,black,.002);detailBox(group,x+side*.038,y,z,.014,.12,.014,black,.003)}
+  function cabinet(x:number,z:number,w:number,d:number,face:'east'|'west',drawers=false){
+    detailBox(group,x,.065,z,w-.08,.13,d-.05,dark);for(const zz of[z-d/2+.009,z+d/2-.009])detailBox(group,x,.466,zz,w,.8,.018,white);detailBox(group,x,.095,z,w,.02,d,white);const side=face==='east'?1:-1;detailBox(group,x-side*(w/2-.009),.46,z,.018,.77,d,white);counter(x,z,w+.055,d+.04,Math.abs(z-8.73)<.01);
+    const fx=x+side*(w/2+.011);if(drawers){for(let i=0;i<4;i++){const yy=.22+i*.176;detailBox(group,fx,yy,z,.02,.17,d-.035,white,.002);for(const zz of[z-d*.17,z+d*.17])detailBox(group,fx+side*.018,yy+.025,zz,.032,.012,.012,black,.002);detailBox(group,fx+side*.039,yy+.025,z,.013,.013,d*.36,black,.003)}}else{const count=d>1?2:1;for(let i=0;i<count;i++){const zz=z-d/2+(i+.5)*d/count;detailBox(group,fx,.465,zz,.02,.746,d/count-.006,white,.002);handle(fx,.67,zz+(count===1?-.13:(i===0?1:-1)*(d/count/2-.06)),side)}}obstacle(x,z,w,d)
+  }
   cabinet(5.12,7.03,.61,.83,'east');cabinet(5.12,8.84,.61,1.5,'east');cabinet(6.79,8.73,.61,1.66,'west');cabinet(6.79,7.62,.61,.48,'west',true);
   // Freestanding electric oven, coil burners and stainless hood.
-  box(5.12,.44,7.78,.6,.84,.62,steel);box(5.44,.43,7.78,.018,.48,.49,black);box(5.46,.43,7.78,.012,.37,.39,new THREE.MeshStandardMaterial({color:'#293035',metalness:.35,roughness:.2}));box(5.49,.66,7.78,.045,.034,.5,steel);for(const z of[7.57,7.71,7.85,7.99])cyl(5.462,.79,z,.022,.018,black).rotation.z=Math.PI/2;box(5.12,.877,7.78,.6,.035,.64,steel);for(const x of[4.98,5.27])for(const z of[7.63,7.94]){cyl(x,.9,z,.106,.008,black);for(let k=0;k<5;k++){const ring=new THREE.Mesh(new THREE.TorusGeometry(.032+k*.013,.003,6,32),steel);ring.rotation.x=Math.PI/2;ring.position.set(x,.906,z);group.add(ring)}}
-  box(5.1,1.68,7.78,.64,.065,.72,steel);box(4.95,1.84,7.78,.3,.27,.52,steel);
-  for(const z of[6.98,8.6,9.2]){box(5.015,1.96,z,.4,.69,.57,white);box(5.23,1.96,z,.025,.65,.535,white);box(5.25,1.91,z-.16,.025,.19,.02,black)}
-  box(5.02,1.73,6.94,.43,.43,.67,white);box(5.245,1.75,6.94,.027,.31,.54,black);box(5.263,1.75,6.99,.005,.23,.36,new THREE.MeshStandardMaterial({color:'#576164',roughness:.3,metalness:.2}));for(let i=0;i<5;i++)box(5.267,1.66+i*.041,6.719,.008,.018,.027,trim);
+  detailBox(group,5.12,.44,7.78,.6,.84,.62,kitchenSteel);detailBox(group,5.44,.43,7.78,.018,.48,.49,black);detailBox(group,5.46,.43,7.78,.012,.37,.39,new THREE.MeshStandardMaterial({color:'#293035',metalness:.35,roughness:.2}));detailBox(group,5.49,.66,7.78,.045,.034,.5,kitchenSteel);for(const z of[7.57,7.71,7.85,7.99])cyl(5.462,.79,z,.022,.018,black).rotation.z=Math.PI/2;detailBox(group,5.12,.877,7.78,.6,.035,.64,kitchenSteel);for(const x of[4.98,5.27])for(const z of[7.63,7.94]){cyl(x,.9,z,.106,.008,black);for(let k=0;k<5;k++){const ring=new THREE.Mesh(new THREE.TorusGeometry(.032+k*.013,.003,6,32),kitchenSteel);ring.rotation.x=Math.PI/2;ring.position.set(x,.906,z);group.add(ring)}}
+  detailBox(group,5.1,1.68,7.78,.64,.065,.72,kitchenSteel);detailBox(group,4.95,1.84,7.78,.3,.27,.52,kitchenSteel);
+  for(const z of[8.6,9.2]){detailBox(group,5.015,1.96,z,.4,.69,.6,white);detailBox(group,5.228,1.96,z,.022,.66,.594,white,.002);handle(5.242,1.77,z-.21,1)}
+  // Recessed white microwave in an open cabinet, with a distinct control strip.
+  for(const z of[6.59,7.29])detailBox(group,5.015,1.77,z,.43,.47,.025,white);for(const y of[1.53,2.005])detailBox(group,5.015,y,6.94,.45,.025,.725,white);detailBox(group,4.807,1.77,6.94,.018,.45,.69,white);detailBox(group,5.015,2.18,6.94,.43,.32,.725,white);detailBox(group,5.241,2.18,6.94,.018,.3,.705,white,.002);handle(5.253,2.12,6.72,1);
+  detailBox(group,5.015,1.723,6.94,.39,.343,.61,white,.009);detailBox(group,5.216,1.725,6.94,.014,.33,.597,white,.003);detailBox(group,5.227,1.744,7.002,.01,.274,.408,black,.004);const microwaveGlass=new THREE.MeshPhysicalMaterial({color:'#323b3d',metalness:.12,roughness:.2,clearcoat:.6});detailBox(group,5.234,1.744,7.002,.005,.226,.356,microwaveGlass,.002);
+  detailBox(group,5.231,1.838,6.719,.006,.033,.068,dark,.001);for(let row=0;row<4;row++)for(let col=0;col<3;col++)detailBox(group,5.234,1.793-row*.024,6.699+col*.019,.007,.008,.008,dark,.001);cyl(5.238,1.65,6.719,.023,.014,white).rotation.z=Math.PI/2;
   // Countertop sink lip, inset dark basin, mixer and dish rack.
-  rounded(6.78,.916,8.63,.49,.016,.75,steel,.07);rounded(6.78,.926,8.64,.38,.016,.53,new THREE.MeshStandardMaterial({color:'#687a80',metalness:.9,roughness:.28}),.065);cyl(6.78,.94,8.64,.034,.003,dark);
+  const lipShape=new THREE.Shape();roundedPath(lipShape,.495,.745,.045);const lipHole=new THREE.Path();roundedPath(lipHole,.422,.594,.035);lipShape.holes.push(lipHole);const sinkLip=new THREE.Mesh(new THREE.ExtrudeGeometry(lipShape,{depth:.004,bevelEnabled:true,bevelSize:.0015,bevelThickness:.0015,bevelSegments:2,steps:1}),kitchenSteel);sinkLip.rotation.x=-Math.PI/2;sinkLip.position.set(6.79,.901,8.64);sinkLip.castShadow=sinkLip.receiveShadow=true;group.add(sinkLip);
+  const basinGeometry=new THREE.BufferGeometry(),basinVertices:number[]=[];const upper=[[-.211,-.297],[.211,-.297],[.211,.297],[-.211,.297]],lower=[[-.155,-.22],[.155,-.22],[.155,.22],[-.155,.22]];for(let i=0;i<4;i++){const n=(i+1)%4;for(const [ring,index]of [[0,i],[0,n],[1,n],[0,i],[1,n],[1,i]]){const v=(ring?lower:upper)[index];basinVertices.push(v[0],ring?.746:.901,v[1])}}basinGeometry.setAttribute('position',new THREE.Float32BufferAttribute(basinVertices,3));basinGeometry.computeVertexNormals();const bowlMaterial=kitchenSteel.clone();bowlMaterial.side=THREE.DoubleSide;bowlMaterial.roughness=.39;const bowl=new THREE.Mesh(basinGeometry,bowlMaterial);bowl.position.set(6.79,0,8.64);bowl.receiveShadow=true;group.add(bowl);detailBox(group,6.79,.742,8.64,.322,.014,.454,bowlMaterial,.012);cyl(6.79,.752,8.64,.028,.003,dark);for(let i=0;i<7;i++){const angle=i*Math.PI*2/7;cyl(6.79+Math.cos(angle)*.018,.754,8.64+Math.sin(angle)*.018,.003,.002,kitchenSteel)}
   const faucetCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(7,.9,8.36),new THREE.Vector3(7,1.19,8.36),new THREE.Vector3(6.83,1.22,8.36),new THREE.Vector3(6.8,1.11,8.36)]);const tap=new THREE.Mesh(new THREE.TubeGeometry(faucetCurve,24,.012,8,false),black);group.add(tap);line([6.97,.94,8.39],[6.92,1.03,8.39],.013,black);
-  for(let i=0;i<10;i++)line([6.57,.98,9.02+i*.032],[6.98,.98,9.02+i*.032],.003,steel);for(const x of[6.57,6.98])line([x,.98,9.02],[x,.98,9.32],.004,steel);
-  rounded(6.72,1.0,6.9,.71,1.99,.69,steel,.025);box(6.348,1.26,6.9,.022,1.34,.64,steel);box(6.348,.34,6.9,.022,.45,.64,steel);box(6.329,.607,6.9,.025,.035,.66,black);box(6.316,.66,6.9,.025,.028,.53,black);box(6.316,.55,6.9,.025,.028,.53,black);obstacle(6.72,6.9,.76,.72);
+  for(let i=0;i<10;i++)line([6.57,.98,9.02+i*.032],[6.98,.98,9.02+i*.032],.003,kitchenSteel);for(const x of[6.57,6.98])line([x,.98,9.02],[x,.98,9.32],.004,kitchenSteel);
+  rounded(6.72,1.0,6.9,.71,1.99,.69,kitchenSteel,.025);detailBox(group,6.348,1.26,6.9,.022,1.34,.64,kitchenSteel);detailBox(group,6.348,.34,6.9,.022,.45,.64,kitchenSteel);detailBox(group,6.329,.607,6.9,.025,.035,.66,black);detailBox(group,6.316,.66,6.9,.025,.028,.53,black);detailBox(group,6.316,.55,6.9,.025,.028,.53,black);obstacle(6.72,6.9,.76,.72);
+  const kitchenGrout=new THREE.MeshStandardMaterial({color:'#c8c9c5',roughness:1});for(const x of[4.888,7.025]){for(let y=1.05;y<1.64;y+=.27)detailBox(group,x,y,8.25,.002,.002,2.95,kitchenGrout,.0002);for(let z=6.85;z<9.7;z+=.48)detailBox(group,x,1.32,z,.002,.63,.002,kitchenGrout,.0002)}
   beginFurniture();
-  // Small circular walnut dining table, white console and plant shelf.
-  cyl(6.21,.75,4.77,.52,.045,walnut);for(let i=0;i<3;i++){const a=i*2*Math.PI/3;line([6.21+Math.sin(a)*.38,.04,4.77+Math.cos(a)*.38],[6.21+Math.sin(a)*.29,.72,4.77+Math.cos(a)*.29],.035,walnut)}obstacle(6.21,4.77,1.04,1.04);
+  // Thin worn-timber top, apron and four tapered splayed legs.
+  const diningTable=photoTable();diningTable.position.set(6.21,0,4.77);group.add(diningTable);obstacle(6.21,4.77,1.04,1.04);
   endFurniture('dining-table','Round dining table');
   beginFurniture();
   box(5.28,.745,4.1,.64,.045,.84,white);for(const z of[3.73,4.47])box(5.28,.37,z,.58,.7,.035,white);box(5.45,.45,4.1,.25,.025,.72,white);box(5.45,.24,4.1,.25,.025,.72,white);
-  const tablePlant=plant(6.55,4.04,.24,.07);tablePlant.position.y=.92;
+  const tablePlant=botanicalPlant(.4,.06,true);tablePlant.position.set(7.01,1.085,4.98);group.add(tablePlant);
   endFurniture('shelving','White console and plant');
   // White bath, glass screen, black rain shower, vanity and toilet.
   box(3.55,.27,.47,1.57,.54,.78,white);rounded(3.55,.56,.47,1.54,.045,.78,white,.06);rounded(3.55,.583,.48,1.32,.009,.58,new THREE.MeshStandardMaterial({color:'#cdd4d2',roughness:.2}),.1);box(3.55,.29,.88,1.58,.48,.035,white);

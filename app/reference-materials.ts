@@ -4,10 +4,10 @@ import * as THREE from 'three';
 // These are appearance reconstructions, not measured PBR scans.
 export async function applyReferenceMaterials(group:THREE.Object3D,isDisposed:()=>boolean) {
  const loader=new THREE.TextureLoader();
- const files:Record<string,string>={'marble tile':'floor-marble-albedo.png','rug':'rug-vintage-albedo.png','leather':'leather-charcoal-albedo.png','oak':'oak-photo-albedo.png','walnut':'oak-photo-albedo.png','balcony brick':'brick-photo-albedo.png','floral duvet':'floral-photo-albedo.png','ochre throws':'throw-photo-albedo.png'};
+ const files:Record<string,string>={'television picture':'/photos/living-1.png','marble tile':'floor-marble-albedo.png','rug':'rug-vintage-albedo.png','leather':'leather-charcoal-albedo.png','oak':'oak-photo-albedo.png','walnut':'oak-photo-albedo.png','balcony brick':'brick-photo-albedo.png','floral duvet':'floral-photo-albedo.png','ochre throws':'throw-photo-albedo.png'};
  const textures:THREE.Texture[]=[];
  const results=await Promise.allSettled(Object.entries(files).map(async([name,file])=>{
-  const texture=await loader.loadAsync('/textures/'+file);
+  const texture=await loader.loadAsync(file.startsWith('/')?file:'/textures/'+file);
   texture.colorSpace=THREE.SRGBColorSpace;texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.anisotropy=8;textures.push(texture);
   return [name,texture] as const;
  }));
@@ -22,6 +22,7 @@ export async function applyReferenceMaterials(group:THREE.Object3D,isDisposed:()
    const source=byName.get(name);if(!source)continue;
    const map=source.clone();const previous=material.map;
    if(previous){map.repeat.copy(previous.repeat);map.offset.copy(previous.offset);map.center.copy(previous.center);map.rotation=previous.rotation;}
+   if(name==='television picture'){material.map=map;material.color.set('#ffffff');material.needsUpdate=true;textures.push(map);continue}
    if(name==='marble tile')map.repeat.multiplyScalar(.5); // Map contains two tiles per edge.
    if(name==='balcony brick')map.repeat.set(.92/1.3,.912/1.3);
    if(name==='floral duvet')map.repeat.set(2,1.55);
